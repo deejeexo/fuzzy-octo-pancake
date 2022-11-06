@@ -1,69 +1,64 @@
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-
 public class LoanCalculator {
-    public static void main(String[] args) throws IOException {
-        InputStreamReader rdr = new InputStreamReader(System.in, StandardCharsets.UTF_8);
-        BufferedReader i = new BufferedReader(rdr);
+    public static class Loan {
+        public double lA;
+        public int t;
+        public double r;
+        public double p;
 
-        double l;
+        public Loan (double lA, int t, double r, double p) {
+            this.lA = lA;
+            this.t = t;
+            this.r = r;
+            this.p = p;
+        }
+    }
+
+    public static void main(String[] args) {
+        Loan loan = new Loan(500, 2, 2.1, 100);
+        LoanCalc(loan);
+    }
+
+    public static void LoanCalc(Loan loan){
         do {
-            System.out.println("Loan amount: ");
-            String lAmnt = i.readLine();
-            l = Double.parseDouble(lAmnt);
-            if(l <= 99){
+            if(loan.lA <= 99){
                 System.out.println("Loan amount must be greater than $99\n");
             }
-        } while(l <= 99);
+        } while(loan.lA <= 99);
 
-        int t;
         do {
-            System.out.println("Loan term in years: ");
-            String termInYears = i.readLine();
-            t = Integer.parseInt(termInYears);
-            if(t <= 0){
+            if(loan.t <= 0){
                 System.out.println("Loan term must be at least one year\n");
             }
-            else if(t > 50){
+            else if(loan.t > 50){
                 System.out.println("Loan term cannot exceed 50 years\n");
             }
-        } while(t <=0 || t > 50);
+        } while(loan.t <= 0 || loan.t > 50);
 
-        double r;
         do {
-            System.out.println("Interest rate per year: ");
-            String rate = i.readLine();
-            r = Double.parseDouble(rate);
-            if(r < 0){
+            if(loan.r < 0){
                 System.out.println("Interest rate cannot be negative\n");
             }
-        } while(r < 0);
+        } while(loan.r < 0);
 
-        double pay;
         do {
-            System.out.println("Down payment: ");
-            String downPayment = i.readLine();
-            pay = Double.parseDouble(downPayment);
-            if(pay < 0){
+            if(loan.p < 0){
                 System.out.println("Down payment cannot be negative, but can be $0\n");
             }
-            else if(pay >= l){
+            else if(loan.p >= loan.lA){
                 System.out.println("Down payment cannot equal or exceed your loan amount\n");
             }
-        } while(pay < 0 || pay >= l);
+        } while(loan.p < 0 || loan.p >= loan.lA);
         System.out.println();
 
-        int terms = t * 12;
-        l -= pay;
+        int terms = loan.t * 12;
+        loan.lA -= loan.p;
         //Calculate rate
-        double rate = (r/100.0) / 12;
-        double payment = (rate * l)/(1-Math.pow((1+rate), -terms));
+        double rate = (loan.r / 100.0) / 12;
+        double payment = (rate * loan.lA) / (1 - Math.pow((1 + rate), -terms));
 
         //Calculate interest
         double totalCost = payment * terms;
-        double interest = totalCost - l;
+        double interest = totalCost - loan.lA;
 
         System.out.println("Monthly Payments: ");
         System.out.print("$");
